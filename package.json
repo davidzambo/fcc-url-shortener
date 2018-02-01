@@ -1,0 +1,30 @@
+{
+  "name": "url-shortener",
+  "version": "1.0.0",
+  "description": "URL shortener microservice",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/davidzambo/fcc-url-shortener.git"
+  },
+  "keywords": [
+    "freecodecamp",
+    "backend"
+  ],
+  "author": "David Zambo",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/davidzambo/fcc-url-shortener/issues"
+  },
+  "homepage": "https://github.com/davidzambo/fcc-url-shortener#readme",
+  "dependencies": {
+    "body-parser": "^1.18.2",
+    "express": "^4.16.2",
+    "mongodb": "^3.0.2",
+    "nodemon": "^1.14.11"
+  }
+}

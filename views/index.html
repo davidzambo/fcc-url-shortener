@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <!-- OPEN GRAPH METATAGS -->
+  <meta property="og:url" content="https://thawing-woodland-15745.herokuapp.com/" />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="FreeCodeCamp's URL Shortener Microservice;" />
+  <meta property="og:description" content="URL Shortener Microservice - the second FreeCodeCamp Backend project"/>
+  <meta property="og:image" content="https://thawing-woodland-15745.herokuapp.com/images/timestamp-600x400.png" />
+  
+  
+  <!-- Favicon -->
+  <link rel="shortcut icon" href="https://www.dcmf.hu/favicon.jpg" type="image/x-icon" />
+
+  <link rel="stylesheet" href="/styles/master.css">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>URL Shortener Microservice</title>
+</head>
+<body>
+  <div class="container">
+    <h1>URL Shortener Microservice</h1>
+    <blockquote>
+      <h3>User stories</h3>
+      <ol>
+        <li>I can pass a URL as a parameter and I will receive a shortened URL in the JSON response.</li>
+        <li>If I pass an invalid URL that doesn't follow the valid http://www.example.com format, the JSON response will contain an error
+        instead.</li>
+        <li>When I visit that shortened URL, it will redirect me to my original link.</li>
+  
+      </ol>
+    </blockquote>
+    <h3>Example usage:</h3>
+    <xmp>https://thawing-woodland-15745.herokuapp.com/shorten/https://www.google.com</xmp>
+    <br/>
+
+  
+    <h3>Example output on success:</h3>
+    <xmp>{ "originalURL": "https://www.google.com", "shortenURL": "ai2re" }</xmp>
+
+    <h3>Example output on failure:</h3>
+    <xmp>{ "error": "You have entered an invalid url. Please check it once again." }</xmp>
+
+  </div>
+  
+  <footer>
+    <p>
+      coded by
+      <a href="https://www.dcmf.hu/" target="_blank">
+        <img src="https://www.dcmf.hu/images/dcmf-letters.png" alt="David's Code Manufactory logo" />
+      </a> 
+    </p>
+  </footer>
+  <script>
+    (function (i, s, o, g, r, a, m) {
+    i['GoogleAnalyticsObject'] = r; i[r] = i[r] || function () {
+      (i[r].q = i[r].q || []).push(arguments)
+    }, i[r].l = 1 * new Date(); a = s.createElement(o),
+      m = s.getElementsByTagName(o)[0]; a.async = 1; a.src = g; m.parentNode.insertBefore(a, m)
+    })(window, document, 'script', 'https://www.google-analytics.com/analytics.js', 'ga');
+
+    ga('create', 'UA-105430750-1', 'auto');
+    ga('send', 'pageview');
+
+  </script>
+</body>
+</html>
