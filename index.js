@@ -1,5 +1,6 @@
 const path = require('path');
 const express = require('express');
+const dbhelpers = require('./db-functions');
 const app = express();
 const port = 3000;
 // const request = require('request');
@@ -17,12 +18,13 @@ const dbName = "shortenUrls";
 // reach the public library
 app.use(express.static(path.join(__dirname, 'public')));
 
+
+// show the app description
 app.get('/', (req,res) => {
-  // show the app description
   res.sendFile(path.join(__dirname, 'views', 'index.html'));
 });
 
-
+// shorten the valid url
 app.get('/shorten/:url(*+)', (req, res) => {
   // check the url. if the format is invalid, return error
   let regex = /^http(s)?:\/\/([\w\d\D]+\.)?[\w\d\D]+\.[\w\d]{2,6}$/; // my own regex, can be buggy
@@ -41,7 +43,7 @@ app.get('/shorten/:url(*+)', (req, res) => {
       console.log('Successfully connected to the db');
       const db = client.db(dbName);
 
-      storeURL(client, req.hostname, givenURL, (err, data) =>{
+      dbhelpers.storeURL(client, req.hostname, givenURL, (err, data) =>{
         if (err){
           console.log(err);
           return res.json(err);
@@ -55,6 +57,25 @@ app.get('/shorten/:url(*+)', (req, res) => {
     res.json({ "error": "You have entered an invalid url. Please check it once again." })
 });
 
+// retrieve the shorten urls
+app.get('/:short(*+)', (req, res) => {
+  MongoClient.connect(url, (err, client) =>{
+    if (err) throw ('Something went wrong while trying to connect to the database: ' + err);
+    const db = client.db(dbName);
+
+    db.collection('urls').findOne({'short_url': req.params.short}, (err, result) => {
+      if (err) throw ('Somenthing went wrong while trying to read from the database. ' +err);
+
+      if (result === null){
+        res.json({'error': 'You have entered an invalid short url.'});
+      } else {
+        res.redirect(result.base_url);
+      }
+    });
+  });
+  // res.send('ok');
+});
+
 
 
 
@@ -62,66 +83,3 @@ app.listen(port, (err, data) => {
   if (err) throw(err);
   console.log('Server is running on port ' + port);
 })
-
-
-function generateShortURL(lng){
-  let result = '';
-  for (let i = 0; i < lng; i++)
-    result += String.fromCharCode(Math.floor(Math.random() * 26 + 97));
-  return result;
-}
-
-
-function storeURL(client, host, givenURL, callback){
-  // check that it is not already stored
-  let docs = client.db(dbName).collection('urls');
-  let shortURL = generateShortURL(4);
-  docs.findOne({"base_url": givenURL}, 
-      (err, result) => {
-        if (err) throw callback(err);
-        if (result !== null) { // if it's already stored, return it
-          console.log('There is already a record in the db with this url');
-          let message = {
-            "original_URL": result.base_url,
-            "short_URL": 'http://' + host + '/' + result.shortened_url
-          }
-          callback(message);
-        } else {  // givenURN is not in our database yet.
-          console.log("I'm going to call the checkShortURLIsUnique function");
-          checkShortURLIsUnique(client, shortURL, (err, data) =>{
-            if (err) throw err;
-            docs.insertOne({
-               base_url: givenURL,
-               short_url: data
-            }, (err, result) => {
-              if (err) throw err;
-              // successfully inserted. Now return the data
-              let message = {
-                "original_URL": givenURL,
-                "short_URL": 'http://' + host + '/' + data
-              }
-              callback(message);
-            })
-          });
-        } // end FindOne shortURL
-      });// end FindOne givenURL
-}
-
-
-
-function checkShortURLIsUnique(client, shortURL, callback){
-  console.log("I'm in the checking function");
-  client.db(dbName).collection('urls') 
-    .findOne({ 
-      short_url: shortURL 
-    }, (err, result) => {
-        if (err) throw (err);
-        if (result !== null){
-          console.log('The generated short url IS NOT unique');
-          checkShortURLIsUnique(client, generateShortURL(4), callback);
-        } else {
-          console.log('The generated short url IS unique');
-          callback(null, shortURL);
-        }
-    });
-}
