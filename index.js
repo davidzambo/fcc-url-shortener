@@ -2,14 +2,15 @@ const path = require('path');
 const express = require('express');
 const dbhelpers = require('./db-functions');
 const app = express();
-const port = 3000;
+require('dotenv').config();
+const port = process.env.PORT || 3000;
 // const request = require('request');
 
 // DB connection
 const MongoClient = require('mongodb').MongoClient;
-const url = 'mongodb://localhost:27017';
+const url = process.env.DB_ADDRESS;
 // dbName
-const dbName = "shortenUrls";
+const dbName = process.env.DB_NAME;
 
 
 /*
@@ -41,9 +42,10 @@ app.get('/shorten/:url(*+)', (req, res) => {
       if (err) throw('Something went wrong while trying to connect to the database: ' + err);
 
       console.log('Successfully connected to the db');
+
       const db = client.db(dbName);
 
-      dbhelpers.storeURL(client, req.hostname, givenURL, (err, data) =>{
+      dbhelpers.storeURL(db, req.hostname, givenURL, (err, data) =>{
         if (err){
           console.log(err);
           return res.json(err);
